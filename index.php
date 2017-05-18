@@ -4,7 +4,7 @@ $HOST = $_SERVER['HTTP_HOST'];
 $URI = $_SERVER['REQUEST_URI'];
 $UA = $_SERVER['HTTP_USER_AGENT'];
 
-render('Secondary');exit;
+// render('Secondary');exit;
 // 百度爬虫
 if (strpos($UA, 'Baiduspider/2.0')) {
     if (strpos($UA, 'Mobile')) {
