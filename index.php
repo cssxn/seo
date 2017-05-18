@@ -3,7 +3,6 @@
 $HOST = $_SERVER['HTTP_HOST'];
 $URI = $_SERVER['REQUEST_URI'];
 $UA = $_SERVER['HTTP_USER_AGENT'];
-$REFER = $_SERVER['HTTP_REFERER'];
 
 // 百度爬虫
 if (strpos($UA, 'Baiduspider/2.0')) {
