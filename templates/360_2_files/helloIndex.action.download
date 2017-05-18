@@ -1,0 +1,1 @@
+(function(){document.write("<span><a href='/login.jsp'>登录</a></span>     <span><a href='/register.jsp'>免费注册</a></span>");})();

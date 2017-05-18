@@ -1,0 +1,120 @@
+/*
+Copyright (c) 2009, mibao8! Inc. All rights reserved.
+*/
+html {
+	color: #000;
+	background: #FFF;
+}
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+button,
+textarea,
+p,
+blockquote,
+th,
+td {
+	margin: 0;
+	padding: 0;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+fieldset,
+img {
+	border: 0;
+}
+li {
+	list-style: none;
+}
+
+caption,
+th {
+	text-align: left;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-size: 100%;
+	font-weight: normal;
+}
+
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+/* because legend doesn't inherit in IE */
+legend {
+	color: #000;
+}
+
+input,
+button,
+textarea,
+select,
+optgroup,
+option {
+	font-family: inherit;
+	font-size: inherit;
+	font-style: inherit;
+	font-weight: inherit;
+}
+
+/* @purpose To enable resizing for IE */
+/* @branch For IE6-Win, IE7-Win */
+input,
+button,
+textarea,
+select {
+	*font-size: 100%;
+}
+/* remember to define focus styles! */
+:focus {
+    outline: 0;
+}
+.clearfix:after{visibility:hidden;display:block;font-size:0;content:" ";clear:both;height:0;}
+.clearfix{display:inline-table;}
+body{color:#3c3c3c;font-size:12px;font-family:"宋体", Arial, Helvetica, sans-serif;text-align:center;}
+a{text-decoration:none;color:#3c3c3c;}
+a:hover{text-decoration:underline;}
+.top-header{width:100%;height:36px;border-bottom:1px solid #e6e6e6;background:#f8f8f8;font-size:14px;font-family:"微软雅黑";}
+.top-header .bd{width:1000px;margin:0 auto;}
+.top-login{float:left;line-height:36px;}
+.top-menu{float:right;height:18px;line-height:18px;margin:10px 0 0 0}
+.weibo,.header h1 a{background:url(../images/bg20131118.png) no-repeat;}
+.weibo{height:18px;padding:0 0 0 25px;display:inline-block;*display:inline;zoom:1;background-position:-376px -186px;overflow:hidden;line-height:18px; vertical-align:middle;}
+.header{width:1000px;margin:0 auto;text-align:left;}
+.header .hd{height:126px;overflow:hidden;}
+.header h1{float:left}
+.header h1 a{width:297px;height:80px;display:block;background-position:0 0;text-indent:-9999em;margin:22px 0 0 0;}
+.logo-ad{float:right;margin:26px 0 0 0;}
+.nav{border-top:1px solid #d7d7d7;padding:10px 0 0 0;overflow:hidden;}
+.nav li{width:104px;float:left;height:32px;line-height:32px;font-size:14px;}
+.nav li.last{width:56px;}
