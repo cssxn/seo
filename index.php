@@ -49,10 +49,10 @@ function render($page)
 {
 
     // 模版目录
-    $templateDir = 'templates';
+    $templateDir = './templates/';
 
     // 缓存目录
-    $cacheDir = 'visited/' . $_SERVER['HTTP_HOST'];
+    $cacheDir = './visited/' . $_SERVER['HTTP_HOST'];
     // 缓存文件
     switch ($page) {
         case 'Main':
