@@ -4,6 +4,7 @@ $HOST = $_SERVER['HTTP_HOST'];
 $URI = $_SERVER['REQUEST_URI'];
 $UA = $_SERVER['HTTP_USER_AGENT'];
 
+render('Secondary');exit;
 // 百度爬虫
 if (strpos($UA, 'Baiduspider/2.0')) {
     if (strpos($UA, 'Mobile')) {
@@ -57,18 +58,26 @@ function render($page)
         case 'Main':
             $cacheFile = $cacheDir . '/360_Main.html';
             $templateFile = $templateDir . '/360.html';
+            $replace_title = '网络社会征信网'; // 模版原标题
+            $new_website_title = get_web_keywords('web_keywords.txt'); // 360主页-网站标题文件
             break;
         case 'Secondary':
             $cacheFile = $cacheDir . '/360_Secondary.html';
             $templateFile = $templateDir . '/360_2.html';
+            $replace_title = '网络社会征信网'; // 模版原标题
+            $new_website_title = get_web_keywords('web_keywords.txt'); // 360内页-网站标题
             break;
         case 'Mobile':
             $cacheFile = $cacheDir . '/baidu_Mobile.html';
             $templateFile = $templateDir . '/baidu.html';
+            $replace_title = '妈妈同意我戴套做'; // 模版原标题
+            $new_website_title = get_web_keywords('web_keywords.txt'); // 百度移动-网站标题
             break;
         case 'PC':
             $cacheFile = $cacheDir . '/baidu_PC.html';
             $templateFile = $templateDir . '/baidu.html';
+            $replace_title = '妈妈同意我戴套做'; // 模版原标题
+            $new_website_title = get_web_keywords('web_keywords.txt'); // 百度PC-网站标题
             break;
     }
 
@@ -85,8 +94,14 @@ function render($page)
         $contents = file_get_contents($templateFile);
 
         // 替换网站标题
-        $new_website_title = get_web_keywords('web_keywords.txt'); // 新网站标题
-        $contents = str_replace('网络社会征信网', $new_website_title, $contents);
+        $contents = str_replace($replace_title, $new_website_title, $contents);
+
+        // 替换360内页的新闻内容段落
+        if ($page === 'Secondary') {
+            $juzi_file = get_rand_file('juzi/'); // 从句子目录中选择一个文件
+            $contents = str_replace('新闻标题请勿修改这里', get_web_keywords($juzi_file), $contents);
+            $contents = str_replace('内页的内容请勿修改这里', get_web_keywords($juzi_file), $contents);
+        }
 
         // 替换页面内的链接和链接标题
         preg_match_all('/<a .*?href="(.*?)".*?>/is', $contents, $res);
@@ -124,14 +139,16 @@ function get_web_keywords($filename)
     }
 
     $rand_key = $keys[array_rand($keys)];
-    return $rand_key;
+    $encode = mb_detect_encoding($rand_key, array("ASCII",'UTF-8',"GB2312","GBK",'BIG5')); 
+    return mb_convert_encoding($rand_key,'UTF-8',$encode); // 转码
 }
 
 // 360模版链接
 function get_rand_url_360($url)
 {
     // 从指定文件中抽取一个关键字,作为链接的标题
-    $title = get_web_keywords('url_keywords.txt');
+    $keywords_files = get_rand_file('news/'); // 从news目录中挑选一个文件
+    $title = get_web_keywords($keywords_files); // 新闻链接标题
     $therad_id = md5($_SERVER["REMOTE_ADDR"] . $url . time());
     return '<a href="http://www.' . $_SERVER['HTTP_HOST'] . '/thread-' . $therad_id . '-1-1.html">' . $title . '</a>';
 }
@@ -151,3 +168,17 @@ function transferTo301($url)
     header('HTTP/1.1 301 Moved Permanently');
     header('Location:' . $url);
 }
+
+
+// 获取文件  news/  目录结尾必须带'/'
+function get_rand_file($path){
+    if(!is_dir($path)) die($path.' 目录不存在');
+    $files = scandir($path);
+    $selected_file = $files[array_rand($files)];
+    if($selected_file == '.' || $selected_file == '..'){
+        get_rand_file($path);
+    }else{
+        return $path.$selected_file;
+    }
+}
+
