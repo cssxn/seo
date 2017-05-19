@@ -1,22 +1,11 @@
 <?php
 
-function get_rand_file($path){
-    if(!is_dir($path)) die($path.' 目录不存在');
-    $handler = opendir($path);
-    while(($filename = readdir($handler) !== false)){
-        if($filename !== '.' || $filename !== '..' && is_file($path.$filename)){
-            // $files[] = $path.$filename;
-            echo $filename.'<br />';
-        }
-    }
-    closedir($path);
-    return $files;
+
+$URI = 'www.a.com/thread-2131-1-1.html';
+
+echo substr($URI,strrpos($URI,'/')+1);
+
+demo();
+function demo(){
+    echo $URI;
 }
-
-// $files = get_rand_file('news/');
-
-
-echo "<pre>";
-
-$files = scandir('juzi/');
-print_r($files[array_rand($files)]);

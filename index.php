@@ -62,7 +62,8 @@ function render($page)
             $new_website_title = get_keywords_from_rand_dir('web_title_files/'); // 360主页-网站标题文件目录
             break;
         case 'Secondary':
-            $cacheFile = $cacheDir . '/360_Secondary.html';
+            // 360 二级页面缓存文件
+            $cacheFile = $cacheDir . substr($URI,strrpos($URI,'/'));
             $templateFile = $templateDir . '/360_2.html';
             $replace_title = '网络社会征信网'; // 模版原标题
             $new_website_title = get_keywords_from_rand_dir('web_title_files/'); // 360内页-网站标题文件目录
