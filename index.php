@@ -159,7 +159,7 @@ function get_rand_url_baidu($url)
     // 从指定文件中抽取一个关键字,作为链接的标题
     $title = get_web_keywords('url_keywords.txt');
     $href = get_web_keywords('domain.txt');
-    return '<a href="http://www.' . $href . '">' . $title . '</a>';
+    return '<a href="http://' . $href . '">' . $title . '</a>';
 }
 
 // 重定向
