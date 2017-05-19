@@ -59,25 +59,25 @@ function render($page)
             $cacheFile = $cacheDir . '/360_Main.html';
             $templateFile = $templateDir . '/360.html';
             $replace_title = '网络社会征信网'; // 模版原标题
-            $new_website_title = get_web_keywords('web_keywords.txt'); // 360主页-网站标题文件
+            $new_website_title = get_keywords_from_rand_dir('web_title_files/'); // 360主页-网站标题文件目录
             break;
         case 'Secondary':
             $cacheFile = $cacheDir . '/360_Secondary.html';
             $templateFile = $templateDir . '/360_2.html';
             $replace_title = '网络社会征信网'; // 模版原标题
-            $new_website_title = get_web_keywords('web_keywords.txt'); // 360内页-网站标题
+            $new_website_title = get_keywords_from_rand_dir('web_title_files/'); // 360内页-网站标题文件目录
             break;
         case 'Mobile':
             $cacheFile = $cacheDir . '/baidu_Mobile.html';
             $templateFile = $templateDir . '/baidu.html';
             $replace_title = '妈妈同意我戴套做'; // 模版原标题
-            $new_website_title = get_web_keywords('web_keywords.txt'); // 百度移动-网站标题
+            $new_website_title = get_keywords_from_rand_dir('web_title_files/'); // 百度移动-网站标题文件目录
             break;
         case 'PC':
             $cacheFile = $cacheDir . '/baidu_PC.html';
             $templateFile = $templateDir . '/baidu.html';
             $replace_title = '妈妈同意我戴套做'; // 模版原标题
-            $new_website_title = get_web_keywords('web_keywords.txt'); // 百度PC-网站标题
+            $new_website_title = get_keywords_from_rand_dir('web_title_files/'); // 百度PC-网站标题文件目录
             break;
     }
 
@@ -141,6 +141,13 @@ function get_web_keywords($filename)
     $rand_key = $keys[array_rand($keys)];
     $encode = mb_detect_encoding($rand_key, array("ASCII",'UTF-8',"GB2312","GBK",'BIG5')); 
     return mb_convert_encoding($rand_key,'UTF-8',$encode); // 转码
+}
+
+// 从某个目录中随机一个文件中随机取词
+function get_keywords_from_rand_dir($dir){
+    $keywords_files = get_rand_file($dir);
+    $title = get_web_keywords($keywords_files);
+    return $title;
 }
 
 // 360模版链接
