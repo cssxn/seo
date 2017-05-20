@@ -189,7 +189,7 @@ function transferTo301($url)
 
 
 // 获取文件  news/  目录结尾必须带'/'
-function get_rand_file($path,$num){
+function get_rand_file($path,$num=0){
     if(!is_dir($path)) die($path.' 目录不存在');
     $files = scandir($path);
     array_shift($files); // 删除.和..文件
