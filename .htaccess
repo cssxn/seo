@@ -1,0 +1,2 @@
+RewriteEngine on
+RewriteRule .html$ /index.php
