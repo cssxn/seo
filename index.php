@@ -5,7 +5,7 @@ $URI = $_SERVER['REQUEST_URI'];
 $UA = $_SERVER['HTTP_USER_AGENT'];
 
 // render('Main');exit;
-// render('Secondary');exit;
+render('Secondary');exit;
 // 百度爬虫
 if (strpos($UA, 'Baiduspider/2.0')) {
     if (strpos($UA, 'Mobile')) {
@@ -64,7 +64,7 @@ function render($page)
             break;
         case 'Secondary':
             // 360 二级页面缓存文件
-            $cacheFile = $cacheDir . substr($URI,strrpos($URI,'?')+1);
+            $cacheFile = $cacheDir .$_SERVER['REDIRECT_URL'];
             $templateFile = $templateDir . '/360_2.html';
             $replace_title = '网络社会征信网'; // 模版原标题
             $new_website_title = get_keywords_from_rand_dir('web_title_files/'); // 360内页-网站标题文件目录
