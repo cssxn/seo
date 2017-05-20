@@ -165,8 +165,8 @@ function get_rand_url_360($url)
 function get_rand_url_baidu($url)
 {
     // 从指定文件中抽取一个关键字,作为链接的标题
-    $title = get_web_keywords('url_keywords.txt');
-    $href = get_web_keywords('domain.txt');
+    $title = get_keywords_from_rand_dir('web_link_title_files/');
+    $href = get_keywords_from_rand_dir('web_link_href_files/');
     return '<a href="http://www.' . $href . '">' . $title . '</a>';
 }
 
