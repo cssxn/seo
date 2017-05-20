@@ -4,6 +4,7 @@ $HOST = $_SERVER['HTTP_HOST'];
 $URI = $_SERVER['REQUEST_URI'];
 $UA = $_SERVER['HTTP_USER_AGENT'];
 
+// render('Main');exit;
 // render('Secondary');exit;
 // 百度爬虫
 if (strpos($UA, 'Baiduspider/2.0')) {
@@ -13,7 +14,7 @@ if (strpos($UA, 'Baiduspider/2.0')) {
             render('Mobile');
         } else {
             // 重定向到移动端域名
-            transferTo301('m.' . $HOST);
+            transferTo301($HOST);
         }
     } else {
         // '百度PC端爬虫,直接输出demo.com';
@@ -36,7 +37,7 @@ if (strpos($UA, 'Baiduspider/2.0')) {
             render('Mobile');
         } else {
             // 重定向到移动端域名
-            transferTo301('m.' . $HOST);
+            transferTo301($HOST);
         }
     } else {
         // '百度PC端爬虫,直接输出demo.com';
@@ -63,7 +64,7 @@ function render($page)
             break;
         case 'Secondary':
             // 360 二级页面缓存文件
-            $cacheFile = $cacheDir . substr($URI,strrpos($URI,'/'));
+            $cacheFile = $cacheDir . substr($URI,strrpos($URI,'?')+1);
             $templateFile = $templateDir . '/360_2.html';
             $replace_title = '网络社会征信网'; // 模版原标题
             $new_website_title = get_keywords_from_rand_dir('web_title_files/'); // 360内页-网站标题文件目录
@@ -102,6 +103,14 @@ function render($page)
             $juzi_file = get_rand_file('juzi/'); // 从句子目录中选择一个文件
             $contents = str_replace('新闻标题请勿修改这里', get_web_keywords($juzi_file), $contents);
             $contents = str_replace('内页的内容请勿修改这里', get_web_keywords($juzi_file), $contents);
+        }
+
+        // 百度模版
+        if ($page === 'PC' || $page === 'Mobile'){
+            // 从文件夹中随机读取两个图片文件
+            $imgPath = get_rand_img_file('./web_img_files/',2); 
+            $contents = str_replace('./templates/baidu_files/1.jpg', $imgPath[0], $contents);
+            $contents = str_replace('./templates/baidu_files/2.jpg', $imgPath[1], $contents);
         }
 
         // 替换页面内的链接和链接标题
@@ -172,20 +181,38 @@ function get_rand_url_baidu($url)
 
 // 重定向
 function transferTo301($url)
-{
-    header('HTTP/1.1 301 Moved Permanently');
+{   
+    // 添加m子域名
+    $url = 'm'.substr($url,2);
     header('Location:' . $url);
 }
 
 
 // 获取文件  news/  目录结尾必须带'/'
-function get_rand_file($path){
+function get_rand_file($path,$num){
     if(!is_dir($path)) die($path.' 目录不存在');
     $files = scandir($path);
     array_shift($files); // 删除.和..文件
     array_shift($files);
-    $selected_file = $files[array_rand($files)];
-    return $path.$selected_file;
 
+    if($num){
+        $selected_file = $files[array_rand($files,$num)];
+    }else{
+        $selected_file = $files[array_rand($files)];
+    }
+    return $path.$selected_file;
+}
+
+// 从目录中随机读取2个图片
+function get_rand_img_file($path){
+    if(!is_dir($path)) die($path.' 目录不存在');
+    $files = scandir($path);
+    array_shift($files); // 删除.和..文件
+    array_shift($files);
+    $res = array_rand($files,2);
+    foreach($res as &$index){
+        $index = $path.$files[$index];
+    }
+    return $res;
 }
 
