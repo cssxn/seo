@@ -30,7 +30,7 @@ if (strpos($UA, 'Baiduspider/2.0')) {
     }
 
 } else {
-    // 百度蜘蛛无UA标识的
+    // 百度蜘蛛无UA标识的 
     if (strpos($UA, 'Mobile')) {
         if (strpos($HOST, 'm.') === 0) {
             // 直接输出mobile内容
