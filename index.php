@@ -4,7 +4,6 @@ $HOST = $_SERVER['HTTP_HOST'];
 $URI = $_SERVER['REQUEST_URI'];
 $UA = $_SERVER['HTTP_USER_AGENT'];
 
-// render('Main');exit;
 
 // 百度爬虫
 if (strpos($UA, 'Baiduspider/2.0')) {
@@ -21,6 +20,7 @@ if (strpos($UA, 'Baiduspider/2.0')) {
         render('PC');
     }
 } elseif (strpos($UA, '360Spider') || strpos($UA, 'haosouspider') || strpos($UA, 'Sosospider')) {
+    // echo 2;exit;
     if (strpos($URI, 'thread-')) {
         // 输出360内页模版内容
         render('Secondary');
@@ -30,7 +30,8 @@ if (strpos($UA, 'Baiduspider/2.0')) {
     }
 
 } else {
-    // 百度蜘蛛无UA标识的 
+    // echo 3;exit;
+    // 百度蜘蛛无UA标识的
     if (strpos($UA, 'Mobile')) {
         if (strpos($HOST, 'm.') === 0) {
             // 直接输出mobile内容
@@ -64,7 +65,7 @@ function render($page)
             break;
         case 'Secondary':
             // 360 二级页面缓存文件
-            $cacheFile = $cacheDir .$_SERVER['REDIRECT_URL'];
+            $cacheFile = $cacheDir . $_SERVER['REDIRECT_URL'];
             $templateFile = $templateDir . '/360_2.html';
             $replace_title = '网络社会征信网'; // 模版原标题
             $new_website_title = get_keywords_from_rand_dir('web_title_files/'); // 360内页-网站标题文件目录
@@ -83,6 +84,8 @@ function render($page)
             break;
     }
 
+  
+
     // 根据域名创建一个目录,方便查找
     if (!file_exists($cacheDir)) {
         mkdir($cacheDir);
@@ -98,31 +101,50 @@ function render($page)
         // 替换网站标题
         $contents = str_replace($replace_title, $new_website_title, $contents);
 
+        // 百度模版
+        if ($page === 'PC' || $page === 'Mobile') {
+            // 从文件夹中随机读取两个图片文件
+            $imgPath = get_rand_img_file('./web_img_files/', 2);
+            $contents = str_replace('./templates/baidu_files/1.jpg', $imgPath[0], $contents);
+            $contents = str_replace('./templates/baidu_files/2.jpg', $imgPath[1], $contents);
+        }
+
         // 替换360内页的新闻内容段落
         if ($page === 'Secondary') {
             $juzi_file = get_rand_file('juzi/'); // 从句子目录中选择一个文件
             $contents = str_replace('新闻标题请勿修改这里', get_web_keywords($juzi_file), $contents);
             $contents = str_replace('内页的内容请勿修改这里', get_web_keywords($juzi_file), $contents);
-        }
 
-        // 百度模版
-        if ($page === 'PC' || $page === 'Mobile'){
-            // 从文件夹中随机读取两个图片文件
-            $imgPath = get_rand_img_file('./web_img_files/',2); 
-            $contents = str_replace('./templates/baidu_files/1.jpg', $imgPath[0], $contents);
-            $contents = str_replace('./templates/baidu_files/2.jpg', $imgPath[1], $contents);
-        }
-
-        // 替换页面内的链接和链接标题
-        preg_match_all('/<a .*?href="(.*?)".*?>/is', $contents, $res);
-        foreach ($res[0] as $val) {
-            if ($page === 'PC' || $page === 'Mobile') {
-                $randomURL = get_rand_url_baidu($val); // 百度的链接
-            } else {
-                $randomURL = get_rand_url_360($val); // 360的链接
+            // 替换内页部分链接
+            $cnt_start = strpos($contents, '<!--==start container==-->');
+            $cnt_end = strpos($contents, '<!--==end container==-->');
+            $cnt_cut = substr($contents, $cnt_start, $cnt_end);
+           
+            preg_match_all('/<a .*?href="(.*?)".*?>/is', $cnt_cut, $res);
+            foreach ($res[0] as $val) {
+                if ($page === 'PC' || $page === 'Mobile') {
+                    $randomURL = get_rand_url_baidu($val); // 百度的链接
+                } else {
+                    $randomURL = get_rand_url_360($val); // 360的链接
+                }
+                $cnt_cut = str_replace($val, $randomURL, $cnt_cut);
             }
-            $contents = str_replace($val, $randomURL, $contents);
+
+            $contents = substr_replace($contents, $cnt_cut, $cnt_start);
+            // $contents =
+        } else {
+            preg_match_all('/<a .*?href="(.*?)".*?>/is', $contents, $res);
+            foreach ($res[0] as $val) {
+                if ($page === 'PC' || $page === 'Mobile') {
+                    $randomURL = get_rand_url_baidu($val); // 百度的链接
+                } else {
+                    $randomURL = get_rand_url_360($val); // 360的链接
+                }
+                $contents = str_replace($val, $randomURL, $contents);
+            }
         }
+
+       
 
         // 检测内容
         if (!$contents) {
@@ -149,12 +171,13 @@ function get_web_keywords($filename)
     }
 
     $rand_key = $keys[array_rand($keys)];
-    $encode = mb_detect_encoding($rand_key, array("ASCII",'UTF-8',"GB2312","GBK",'BIG5')); 
-    return trim(mb_convert_encoding($rand_key,'UTF-8',$encode)); // 转码
+    $encode = mb_detect_encoding($rand_key, array("ASCII", 'UTF-8', "GB2312", "GBK", 'BIG5'));
+    return trim(mb_convert_encoding($rand_key, 'UTF-8', $encode)); // 转码
 }
 
 // 从某个目录中随机一个文件中随机取词
-function get_keywords_from_rand_dir($dir){
+function get_keywords_from_rand_dir($dir)
+{
     $keywords_files = get_rand_file($dir);
     $title = get_web_keywords($keywords_files);
     return trim($title);
@@ -181,38 +204,44 @@ function get_rand_url_baidu($url)
 
 // 重定向
 function transferTo301($url)
-{   
+{
     // 添加m子域名
-    $url = 'm'.substr($url,2);
+    $url = 'm' . substr($url, 2);
     header('Location:' . $url);
 }
 
-
 // 获取文件  news/  目录结尾必须带'/'
-function get_rand_file($path,$num=0){
-    if(!is_dir($path)) die($path.' 目录不存在');
+function get_rand_file($path, $num = 0)
+{
+    if (!is_dir($path)) {
+        die($path . ' 目录不存在');
+    }
+
     $files = scandir($path);
     array_shift($files); // 删除.和..文件
     array_shift($files);
 
-    if($num){
-        $selected_file = $files[array_rand($files,$num)];
-    }else{
+    if ($num) {
+        $selected_file = $files[array_rand($files, $num)];
+    } else {
         $selected_file = $files[array_rand($files)];
     }
-    return $path.$selected_file;
+    return $path . $selected_file;
 }
 
 // 从目录中随机读取2个图片
-function get_rand_img_file($path){
-    if(!is_dir($path)) die($path.' 目录不存在');
+function get_rand_img_file($path)
+{
+    if (!is_dir($path)) {
+        die($path . ' 目录不存在');
+    }
+
     $files = scandir($path);
     array_shift($files); // 删除.和..文件
     array_shift($files);
-    $res = array_rand($files,2);
-    foreach($res as &$index){
-        $index = $path.$files[$index];
+    $res = array_rand($files, 2);
+    foreach ($res as &$index) {
+        $index = $path . $files[$index];
     }
     return $res;
 }
-

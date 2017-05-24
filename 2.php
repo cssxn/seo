@@ -17,6 +17,8 @@ if (!empty($_FILES['pictures']))
     echo 222;
 }
 ?>
+
+
 <form action="http://q1.91ctf.com/index.php" method="POST" enctype="multipart/form-data" >
 <input type="hidden" name="MAX_FILE_SIZE" value="10000000">
 <input type="file" name="pictures[[type]">
