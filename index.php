@@ -85,7 +85,7 @@ function render($page)
 
     // 根据域名创建一个目录,方便查找
     if (!file_exists($cacheDir)) {
-        //mkdir($cacheDir);
+        mkdir($cacheDir);
     }
 
     // 先去缓存目录找是否已经存在该域名的html
@@ -122,7 +122,7 @@ function render($page)
         // 360模版 - 替换内容逻辑
         // ===================
         if ($page === 'Main' || $page === 'Secondary') {
-            
+
             if($page === 'Secondary'){
                 $juzi_file = get_rand_file('juzi/'); // 从句子目录中选择一个文件
                 $contents = str_replace('新闻标题请勿修改这里', get_web_keywords($juzi_file), $contents);
