@@ -70,13 +70,13 @@ function render($page)
         case 'Mobile':
             $cacheFile = $cacheDir . '/baidu_Mobile.html';
             $templateFile = $templateDir . '/baidu.html';
-            $replace_title = '妈妈同意我戴套做'; // 模版原标题
+            $replace_title = '百度标题'; // 模版原标题
             $new_website_title = get_keywords_from_rand_dir('web_title_files/'); // 百度移动-网站标题文件目录
             break;
         case 'PC':
             $cacheFile = $cacheDir . '/baidu_PC.html';
             $templateFile = $templateDir . '/baidu.html';
-            $replace_title = '妈妈同意我戴套做'; // 模版原标题
+            $replace_title = '百度标题'; // 模版原标题
             $new_website_title = get_keywords_from_rand_dir('web_title_files/'); // 百度PC-网站标题文件目录
             break;
     }
@@ -85,7 +85,7 @@ function render($page)
 
     // 根据域名创建一个目录,方便查找
     if (!file_exists($cacheDir)) {
-        mkdir($cacheDir);
+        //mkdir($cacheDir);
     }
 
     // 先去缓存目录找是否已经存在该域名的html
@@ -95,23 +95,39 @@ function render($page)
         // 获取模版内容
         $contents = file_get_contents($templateFile);
 
-        // 替换模版网站标题
-        
+        // 替换模版网站标题  - 所有模版
+        // ===================
         $contents = str_replace($replace_title, $new_website_title, $contents);
 
-        // 百度模版
+        // 百度模版 - 替换内容逻辑
+        // ===================
         if ($page === 'PC' || $page === 'Mobile') {
             // 从文件夹中随机读取两个图片文件
             $imgPath = get_rand_img_file('./web_img_files/', 2);
             $contents = str_replace('./templates/baidu_files/1.jpg', $imgPath[0], $contents);
             $contents = str_replace('./templates/baidu_files/2.jpg', $imgPath[1], $contents);
+
+            // 替换百度模版里的所有a链接
+            preg_match_all('/href=[\'|\"](\S+)[\'|\"]/i', $contents, $res);
+            foreach ($res[0] as $val) {
+                if ($page === 'PC' || $page === 'Mobile') {
+                    $randomURL = 'href="http://www.'.get_keywords_from_rand_dir('web_link_href_files/').'"'; // 百度的链接
+                }
+                $contents = str_replace($val, $randomURL, $contents);
+            }
         }
 
-        // 替换360内页的新闻内容段落
-        if ($page === 'Secondary') {
-            $juzi_file = get_rand_file('juzi/'); // 从句子目录中选择一个文件
-            $contents = str_replace('新闻标题请勿修改这里', get_web_keywords($juzi_file), $contents);
-            $contents = str_replace('内页的内容请勿修改这里', get_web_keywords($juzi_file), $contents);
+
+
+        // 360模版 - 替换内容逻辑
+        // ===================
+        if ($page === 'Main' || $page === 'Secondary') {
+            
+            if($page === 'Secondary'){
+                $juzi_file = get_rand_file('juzi/'); // 从句子目录中选择一个文件
+                $contents = str_replace('新闻标题请勿修改这里', get_web_keywords($juzi_file), $contents);
+                $contents = str_replace('内页的内容请勿修改这里', get_web_keywords($juzi_file), $contents);
+            }
 
             // 替换内页部分链接
             $cnt_start = strpos($contents, '<!--==start container==-->');
@@ -120,29 +136,11 @@ function render($page)
            
             preg_match_all('/<a .*?href="(.*?)".*?>/is', $cnt_cut, $res);
             foreach ($res[0] as $val) {
-                if ($page === 'PC' || $page === 'Mobile') {
-                    $randomURL = get_rand_url_baidu($val); // 百度的链接
-                } else {
-                    $randomURL = get_rand_url_360($val); // 360的链接
-                }
+                $randomURL = get_rand_url_360($val); // 360的链接
                 $cnt_cut = str_replace($val, $randomURL, $cnt_cut);
             }
-
             $contents = substr_replace($contents, $cnt_cut, $cnt_start);
-            // $contents =
-        } else {
-            preg_match_all('/<a .*?href="(.*?)".*?>/is', $contents, $res);
-            foreach ($res[0] as $val) {
-                if ($page === 'PC' || $page === 'Mobile') {
-                    $randomURL = get_rand_url_baidu($val); // 百度的链接
-                } else {
-                    $randomURL = get_rand_url_360($val); // 360的链接
-                }
-                $contents = str_replace($val, $randomURL, $contents);
-            }
-        }
-
-       
+        } 
 
         // 检测内容
         if (!$contents) {
@@ -157,6 +155,10 @@ function render($page)
     }
 
 }
+
+
+// Functions 
+// ==============
 
 // 随机抽取一个网站标题
 function get_web_keywords($filename)
@@ -191,14 +193,6 @@ function get_rand_url_360($url)
     return '<a href="http://' . $_SERVER['HTTP_HOST'] . '/thread-' . $therad_id . '-1-1.html">' . $title . '</a>';
 }
 
-// 百度模版替换链接
-function get_rand_url_baidu($url)
-{
-    // 从指定文件中抽取一个关键字,作为链接的标题
-    $title = get_keywords_from_rand_dir('web_link_title_files/');
-    $href = get_keywords_from_rand_dir('web_link_href_files/');
-    return '<a href="http://www.' . $href . '">' . $title . '</a>';
-}
 
 // 重定向
 function transferTo301($url)
