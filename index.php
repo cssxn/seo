@@ -3,10 +3,6 @@
 $HOST = $_SERVER['HTTP_HOST'];
 $URI = $_SERVER['REQUEST_URI'];
 $UA = $_SERVER['HTTP_USER_AGENT'];
-$a = get_keywords_from_rand_dir('web_title_files/');
-//$a = get_web_keywords('web_title_files/web_keywords.txt');
-print_r($a);
-exit;
 
 // 百度爬虫
 if (strpos($UA, 'Baiduspider/2.0')) {
