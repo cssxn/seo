@@ -3,7 +3,10 @@
 $HOST = $_SERVER['HTTP_HOST'];
 $URI = $_SERVER['REQUEST_URI'];
 $UA = $_SERVER['HTTP_USER_AGENT'];
-
+$a = get_keywords_from_rand_dir('web_title_files/');
+//$a = get_web_keywords('web_title_files/web_keywords.txt');
+print_r($a);
+exit;
 
 // 百度爬虫
 if (strpos($UA, 'Baiduspider/2.0')) {
@@ -217,8 +220,15 @@ function get_rand_file($path, $num = 0)
     }
 
     $files = scandir($path);
-    array_shift($files); // 删除.和..文件
-    array_shift($files);
+
+    $files_count = count($files);
+    $file_i = 0;
+    while($files_count > $file_i){
+        if($files[$file_i] == '.' || $files[$file_i] == '..' || $files[$file_i] == '.DS_Store'){
+            unset($files[$file_i]);
+        }
+        $file_i++;
+    }
 
     if ($num) {
         $selected_file = $files[array_rand($files, $num)];
