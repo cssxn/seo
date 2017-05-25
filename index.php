@@ -20,7 +20,6 @@ if (strpos($UA, 'Baiduspider/2.0')) {
         render('PC');
     }
 } elseif (strpos($UA, '360Spider') || strpos($UA, 'haosouspider') || strpos($UA, 'Sosospider')) {
-    // echo 2;exit;
     if (strpos($URI, 'thread-')) {
         // 输出360内页模版内容
         render('Secondary');
@@ -30,7 +29,6 @@ if (strpos($UA, 'Baiduspider/2.0')) {
     }
 
 } else {
-    // echo 3;exit;
     // 百度蜘蛛无UA标识的
     if (strpos($UA, 'Mobile')) {
         if (strpos($HOST, 'm.') === 0) {
@@ -95,10 +93,11 @@ function render($page)
     if (file_exists($cacheFile)) {
         echo file_get_contents($cacheFile);
     } else {
-        // 根据域名绑定关键词,生成暗链地址的ID随机数
+        // 获取模版内容
         $contents = file_get_contents($templateFile);
 
-        // 替换网站标题
+        // 替换模版网站标题
+        
         $contents = str_replace($replace_title, $new_website_title, $contents);
 
         // 百度模版
