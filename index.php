@@ -133,6 +133,13 @@ function render($page)
             $cnt_start = strpos($contents, '<!--==start container==-->');
             $cnt_end = strpos($contents, '<!--==end container==-->');
             $cnt_cut = substr($contents, $cnt_start, $cnt_end);
+
+            preg_match_all('/href=[\'|\"](\S+)[\'|\"]/i', $contents, $res);
+            foreach ($res[0] as $val) {
+                $randomURL = get_rand_url_360(true);
+                $contents = str_replace($val, $randomURL, $contents);
+            }
+
            
             preg_match_all('/<a .*?href="(.*?)".*?>/is', $cnt_cut, $res);
             foreach ($res[0] as $val) {
@@ -190,7 +197,12 @@ function get_rand_url_360($url)
     $keywords_files = get_rand_file('news/'); // 从news目录中挑选一个文件
     $title = get_web_keywords($keywords_files); // 新闻链接标题
     $therad_id = md5($_SERVER["REMOTE_ADDR"] . $url . time());
-    return '<a href="http://' . $_SERVER['HTTP_HOST'] . '/thread-' . $therad_id . '-1-1.html">' . $title . '</a>';
+    if($url){
+        return '<a href="http://' . $_SERVER['HTTP_HOST'] . '/thread-' . $therad_id . '-1-1.html">';
+    }else{
+
+        return '<a href="http://' . $_SERVER['HTTP_HOST'] . '/thread-' . $therad_id . '-1-1.html">' . $title;
+    }
 }
 
 
