@@ -139,7 +139,7 @@ function render($page)
                 $randomURL = get_rand_url_360($val); // 360的链接
                 $cnt_cut = str_replace($val, $randomURL, $cnt_cut);
             }
-            $contents = substr_replace($contents, $cnt_cut, $cnt_start);
+            $contents = str_replace(substr($contents, $cnt_start, $cnt_end), $cnt_cut, $contents);
         } 
 
         // 检测内容
