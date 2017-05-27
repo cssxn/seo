@@ -85,7 +85,7 @@ function render($page)
 
     // 根据域名创建一个目录,方便查找
     if (!file_exists($cacheDir)) {
-        mkdir($cacheDir);
+        //mkdir($cacheDir);
     }
 
     // 先去缓存目录找是否已经存在该域名的html
@@ -134,7 +134,7 @@ function render($page)
             $cnt_end = strpos($contents, '<!--==end container==-->');
             $cnt_cut = substr($contents, $cnt_start, $cnt_end);
 
-            preg_match_all('/href=[\'|\"](\S+)[\'|\"]/i', $contents, $res);
+            preg_match_all('/^<a\s*(target=\"_blank\")?href=[\'|\"](\S+)[\'|\"]\s*(target=\"_blank\")?>$/i', $contents, $res);
             foreach ($res[0] as $val) {
                 $randomURL = get_rand_url_360(true);
                 $contents = str_replace($val, $randomURL, $contents);
@@ -143,7 +143,7 @@ function render($page)
            
             preg_match_all('/<a .*?href="(.*?)".*?>/is', $cnt_cut, $res);
             foreach ($res[0] as $val) {
-                $randomURL = get_rand_url_360($val); // 360的链接
+                $randomURL = get_rand_url_360(); // 360的链接
                 $cnt_cut = str_replace($val, $randomURL, $cnt_cut);
             }
             $contents = str_replace(substr($contents, $cnt_start, $cnt_end), $cnt_cut, $contents);
@@ -198,10 +198,10 @@ function get_rand_url_360($url)
     $title = get_web_keywords($keywords_files); // 新闻链接标题
     $therad_id = md5($_SERVER["REMOTE_ADDR"] . $url . time());
     if($url){
-        return '<a href="http://' . $_SERVER['HTTP_HOST'] . '/thread-' . $therad_id . '-1-1.html">';
+        return '<a target="_blank" href="http://' . $_SERVER['HTTP_HOST'] . '/thread-' . $therad_id . '-1-1.html">';
     }else{
 
-        return '<a href="http://' . $_SERVER['HTTP_HOST'] . '/thread-' . $therad_id . '-1-1.html">' . $title;
+        return '<a target="_blank" href="http://' . $_SERVER['HTTP_HOST'] . '/thread-' . $therad_id . '-1-1.html">' . $title;
     }
 }
 
