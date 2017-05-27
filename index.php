@@ -85,7 +85,7 @@ function render($page)
 
     // 根据域名创建一个目录,方便查找
     if (!file_exists($cacheDir)) {
-        //mkdir($cacheDir);
+        mkdir($cacheDir);
     }
 
     // 先去缓存目录找是否已经存在该域名的html
