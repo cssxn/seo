@@ -143,7 +143,7 @@ function render($page)
            
             preg_match_all('/<a .*?href="(.*?)".*?>/is', $cnt_cut, $res);
             foreach ($res[0] as $val) {
-                $randomURL = get_rand_url_360(); // 360的链接
+                $randomURL = get_rand_url_360(false); // 360的链接
                 $cnt_cut = str_replace($val, $randomURL, $cnt_cut);
             }
             $contents = str_replace(substr($contents, $cnt_start, $cnt_end), $cnt_cut, $contents);
